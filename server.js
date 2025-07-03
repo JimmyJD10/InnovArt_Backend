@@ -11,7 +11,7 @@ sequelize.sync() // Usa { force: true } solo si quieres borrar y recrear todo ca
   })
   .then(() => {
     console.log('✅ Conectado a la base de datos');
-    app.listen(PORT, () => {
+    app.listen(PORT, '0.0.0.0', () => {
       console.log(`🚀 Servidor backend escuchando en puerto ${PORT}`);
     });
   })
