@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const userController = require('../controllers/userController');
 const authMiddleware = require('../middlewares/authMiddleware');
-const admin = require('../middlewares/adminMiddleware');
+const adminMiddleware = require('../middlewares/adminMiddleware');
 const { body } = require('express-validator');
 
 // Registro público (solo cliente o artesano)
@@ -41,7 +41,7 @@ router.post('/login',
 );
 
 // Obtener todos los usuarios (solo admin, excepto filtro de artesanos)
-router.get('/', userController.getAllUsers);
+router.get('/', userController.obtenerUsuarios);
 
 // Obtener usuario por ID (público)
 router.get('/:id', userController.obtenerUsuarioPorId);
@@ -49,31 +49,11 @@ router.get('/:id', userController.obtenerUsuarioPorId);
 // Perfil propio (requiere login)
 router.get('/me', authMiddleware, userController.getMe);
 
-// Actualizar y eliminar usuario (puedes proteger si quieres)
-router.put('/:id', userController.actualizarUsuario);
-router.delete('/:id', auth, admin, userController.eliminarUsuario);
-
 // Búsqueda avanzada (opcional)
-router.get('/search', async (req, res) => {
-  const { q, categoria, ubicacion } = req.query;
-  const { Op } = require('sequelize');
-  const where = { rol: 'artesano' };
-  if (q) {
-    where.nombre_completo = { [Op.like]: `%${q}%` };
-  }
-  if (categoria) {
-    where.especialidades = { [Op.like]: `%${categoria}%` };
-  }
-  if (ubicacion) {
-    // Puedes ajustar el campo según tu modelo, aquí se usa 'ciudad'
-    where.ciudad = { [Op.like]: `%${ubicacion}%` };
-  }
-  try {
-    const artesanos = await require('../models/User').findAll({ where, limit: 10 });
-    res.json(artesanos);
-  } catch (error) {
-    res.status(500).json({ error: 'Error en el servidor' });
-  }
-});
+router.get('/search', userController.buscarUsuarios);
+
+// Actualizar y eliminar usuario (puedes proteger si quieres)
+router.put('/:id', authMiddleware, userController.actualizarUsuario);
+router.delete('/:id', authMiddleware, adminMiddleware, userController.eliminarUsuario);
 
 module.exports = router;

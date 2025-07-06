@@ -1,9 +1,58 @@
+const { Op } = require('sequelize');
 const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { validationResult } = require('express-validator');
 
-// Registro público (solo cliente o artesano)
+// Obtener usuario autenticado
+exports.getMe = (req, res) => {
+  if (!req.user) return res.status(401).json({ mensaje: 'No autenticado' });
+  const { contraseña, ...userData } = req.user.toJSON();
+  res.json(userData);
+};
+
+// Buscar usuarios avanzado
+exports.buscarUsuarios = async (req, res) => {
+  const q = req.query.q;
+  let where = {};
+  if (q) {
+    where[Op.or] = [
+      { nombre_completo: { [Op.like]: `%${q}%` } },
+      { descripcion: { [Op.like]: `%${q}%` } },
+      { especialidades: { [Op.like]: `%${q}%` } },
+      { ciudad: { [Op.like]: `%${q}%` } },
+      { redes_sociales: { [Op.like]: `%${q}%` } },
+      { certificaciones: { [Op.like]: `%${q}%` } }
+    ];
+  }
+  const usuarios = await User.findAll({ where });
+  res.json(usuarios.map(u => {
+    const { contraseña, ...userData } = u.toJSON();
+    return userData;
+  }));
+};
+
+// Listar usuarios
+exports.obtenerUsuarios = async (req, res) => {
+  const where = {};
+  if (req.query.rol) where.rol = req.query.rol;
+  if (req.query.destacados) where.destacado = req.query.destacados === 'true' || req.query.destacados === '1';
+  const usuarios = await User.findAll({ where });
+  res.json(usuarios.map(u => {
+    const { contraseña, ...userData } = u.toJSON();
+    return userData;
+  }));
+};
+
+// Obtener usuario por ID
+exports.obtenerUsuarioPorId = async (req, res) => {
+  const user = await User.findByPk(req.params.id);
+  if (!user) return res.status(404).json({ mensaje: 'Usuario no encontrado' });
+  const { contraseña, ...userData } = user.toJSON();
+  res.json(userData);
+};
+
+// Crear usuario
 exports.crearUsuario = async (req, res) => {
   // Validación de campos
   const errors = validationResult(req);
@@ -27,102 +76,37 @@ exports.crearUsuario = async (req, res) => {
     delete data.confirmar_contraseña;
     // Crea usuario
     const user = await User.create(data);
-    res.status(201).json({ mensaje: 'Usuario registrado correctamente', user: { id: user.id, nombre_completo: user.nombre_completo, correo: user.correo, rol: user.rol } });
+    const { contraseña, ...userData } = user.toJSON();
+    res.status(201).json(userData);
   } catch (error) {
     res.status(400).json({ mensaje: error.message });
   }
 };
 
-// Login
-exports.login = async (req, res) => {
-  // Validación de entrada
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(422).json({ errores: errors.array() });
-  }
-  try {
-    const { correo, contraseña } = req.body;
-    const user = await User.findOne({ where: { correo } });
-    if (!user) return res.status(404).json({ mensaje: 'Usuario no encontrado' });
-    const valid = await bcrypt.compare(contraseña, user.contraseña);
-    if (!valid) return res.status(401).json({ mensaje: 'Contraseña incorrecta' });
-    // JWT_SECRET debe estar definido en producción
-    if (!process.env.JWT_SECRET) {
-      return res.status(500).json({ error: 'JWT_SECRET no configurado en el entorno' });
-    }
-    const token = jwt.sign(
-      { id: user.id, correo: user.correo, rol: user.rol },
-      process.env.JWT_SECRET,
-      { expiresIn: '1d' }
-    );
-    res.json({ token, user });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
-
-// Obtener todos los usuarios
-exports.obtenerUsuarios = async (req, res) => {
-  try {
-    const where = {};
-    if (req.query.rol) {
-      where.rol = req.query.rol;
-    }
-    // Cambia 'createdAt' por 'id'
-    const usuarios = await User.findAll({ where, limit: 20, order: [['id', 'DESC']] });
-    res.json(usuarios);
-  } catch (err) {
-    console.error('Error en obtenerUsuarios:', err);
-    res.status(500).json({ mensaje: 'Error al obtener usuarios' });
-  }
-};
-
-// Obtener usuario por ID
-exports.obtenerUsuarioPorId = async (req, res) => {
-  try {
-    const user = await User.findByPk(req.params.id);
-    if (!user) return res.status(404).json({ mensaje: 'Usuario no encontrado' });
-    res.status(200).json(user);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
-
-// Actualizar usuario
+// Actualizar usuario (solo campos permitidos y solo dueño o admin)
 exports.actualizarUsuario = async (req, res) => {
-  try {
-    const [updated] = await User.update(req.body, { where: { id: req.params.id } });
-    if (!updated) return res.status(404).json({ mensaje: 'Usuario no encontrado' });
-    const user = await User.findByPk(req.params.id);
-    res.status(200).json(user);
-  } catch (error) {
-    res.status(400).json({ error: error.message });
+  const camposPermitidos = [
+    'nombre_completo', 'telefono', 'direccion', 'ciudad', 'pais', 'foto_perfil',
+    'descripcion', 'especialidades', 'portafolio', 'redes_sociales', 'disponibilidad',
+    'metodos_pago_aceptados', 'ubicacion_precisa', 'certificaciones', 'experiencia_anios'
+  ];
+  if (req.user.rol !== 'admin' && req.user.id !== parseInt(req.params.id)) {
+    return res.status(403).json({ mensaje: 'No autorizado' });
   }
+  const data = {};
+  for (const campo of camposPermitidos) {
+    if (req.body[campo] !== undefined) data[campo] = req.body[campo];
+  }
+  await User.update(data, { where: { id: req.params.id } });
+  const user = await User.findByPk(req.params.id);
+  const { contraseña, ...userData } = user.toJSON();
+  res.json(userData);
 };
 
-// Eliminar usuario
+// Eliminar usuario (solo admin)
 exports.eliminarUsuario = async (req, res) => {
-  try {
-    const deleted = await User.destroy({ where: { id: req.params.id } });
-    if (!deleted) return res.status(404).json({ mensaje: 'Usuario no encontrado' });
-    res.status(200).json({ mensaje: 'Usuario eliminado' });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
-
-// Obtener perfil propio
-exports.obtenerPerfilPropio = async (req, res) => {
-  try {
-    const user = await User.findByPk(req.user.id);
-    if (!user) return res.status(404).json({ mensaje: 'Usuario no encontrado' });
-    res.status(200).json(user);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
-
-// Obtener información del usuario autenticado
-exports.getMe = (req, res) => {
-  res.json(req.user);
+  const user = await User.findByPk(req.params.id);
+  if (!user) return res.status(404).json({ mensaje: 'Usuario no encontrado' });
+  await user.destroy();
+  res.json({ mensaje: 'Usuario eliminado' });
 };
