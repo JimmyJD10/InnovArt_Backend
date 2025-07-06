@@ -47,7 +47,7 @@ router.get('/', userController.getAllUsers);
 router.get('/:id', userController.obtenerUsuarioPorId);
 
 // Perfil propio (requiere login)
-router.get('/me', authMiddleware, userController.obtenerPerfilPropio);
+router.get('/me', authMiddleware, userController.getMe);
 
 // Actualizar y eliminar usuario (puedes proteger si quieres)
 router.put('/:id', userController.actualizarUsuario);

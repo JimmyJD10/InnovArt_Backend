@@ -121,3 +121,8 @@ exports.obtenerPerfilPropio = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+// Obtener información del usuario autenticado
+exports.getMe = (req, res) => {
+  res.json(req.user);
+};
