@@ -47,7 +47,10 @@ router.get('/', userController.getAllUsers);
 router.get('/:id', userController.obtenerUsuarioPorId);
 
 // Perfil propio (requiere login)
-router.get('/me', authMiddleware, userController.getMe);
+router.get('/me', authMiddleware, (req, res) => {
+  // Si tu userController.getMe no existe, usa esto directamente:
+  res.json(req.user);
+});
 
 // Actualizar y eliminar usuario (puedes proteger si quieres)
 router.put('/:id', userController.actualizarUsuario);
