@@ -22,7 +22,3 @@ router.put('/:id', authMiddleware, productController.actualizarProducto);
 router.delete('/:id', authMiddleware, productController.eliminarProducto);
 
 module.exports = router;
-  res.json(productos);
-});
-
-module.exports = router;
