@@ -1,3 +1,4 @@
+const { Op } = require('sequelize');
 const Product = require('../models/Product');
 const User = require('../models/User');
 const Resena = require('../models/Resena');
@@ -60,28 +61,27 @@ exports.eliminarProducto = async (req, res) => {
 };
 
 exports.buscarProductos = async (req, res) => {
-  const q = req.query.q;
-  const where = {};
-  if (q) {
-    where.titulo = { $like: `%${q}%` };
-  }
-  const productos = await Product.findAll({ where, limit: 20 });
-  res.json(productos);
-};
-// Actualizar producto
-exports.actualizarProducto = async (req, res) => {
   try {
-    const [updated] = await Product.update(req.body, { where: { id: req.params.id } });
-    if (!updated) return res.status(404).json({ mensaje: 'Producto no encontrado' });
-    const product = await Product.findByPk(req.params.id);
-    res.status(200).json(product);
+    const { q, categoria, ubicacion } = req.query;
+    const where = {};
+
+    if (q) {
+      where.titulo = { [Op.like]: `%${q}%` }; // Cambia 'nombre' por 'titulo' si tu modelo usa ese campo
+    }
+    if (categoria) {
+      where.categoria = categoria;
+    }
+    if (ubicacion) {
+      where.ubicacion = ubicacion;
+    }
+
+    const productos = await Product.findAll({ where, limit: 10 });
+    res.json(productos);
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    console.error('Error buscando productos:', error);
+    res.status(500).json({ error: 'Error buscando productos' });
   }
 };
-
-// Eliminar producto
-exports.eliminarProducto = async (req, res) => {
   try {
     const deleted = await Product.destroy({ where: { id: req.params.id } });
     if (!deleted) return res.status(404).json({ mensaje: 'Producto no encontrado' });
