@@ -1,28 +1,22 @@
 const Resena = require('../models/Resena');
 
 exports.crearResena = async (req, res) => {
-  res.json({ mensaje: 'Reseña creada (implementa la lógica)' });
+  try {
+    const resena = await Resena.create(req.body);
+    res.status(201).json(resena);
+  } catch (err) {
+    res.status(500).json({ error: 'Error al crear reseña' });
+  }
 };
 
 exports.obtenerResenas = async (req, res) => {
-  res.json([]);
-};
-
-exports.obtenerResenaPorId = async (req, res) => {
-  res.json({});
-};
-
-exports.actualizarResena = async (req, res) => {
-  res.json({ mensaje: 'Reseña actualizada (implementa la lógica)' });
-};
-
-exports.eliminarResena = async (req, res) => {
-  res.json({ mensaje: 'Reseña eliminada (implementa la lógica)' });
-};
-
-exports.buscarResenas = async (req, res) => {
-  res.json([]);
-};
+  try {
+    const where = {};
+    if (req.query.clienteId) where.clienteId = req.query.clienteId;
+    if (req.query.artesanoId) where.artesanoId = req.query.artesanoId;
+    if (req.query.productoId) where.productoId = req.query.productoId;
+    if (req.query.destacadas) where.destacada = req.query.destacadas === '1' || req.query.destacadas === 'true';
+    const resenas = await Resena.findAll({ where });
     // Incluye productoId y artesanoId en la respuesta
     res.json(resenas.map(r => ({
       ...r.toJSON(),
@@ -62,5 +56,19 @@ exports.eliminarResena = async (req, res) => {
     res.status(200).json({ mensaje: 'Reseña eliminada' });
   } catch (error) {
     res.status(500).json({ error: error.message });
+  }
+};
+
+exports.buscarResenas = async (req, res) => {
+  try {
+    const { q } = req.query;
+    const where = {};
+    if (q) {
+      where.comentario = { $like: `%${q}%` };
+    }
+    const resenas = await Resena.findAll({ where, limit: 10 });
+    res.json(resenas);
+  } catch (err) {
+    res.status(500).json({ error: 'Error al buscar reseñas' });
   }
 };
