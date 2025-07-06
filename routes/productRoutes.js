@@ -3,6 +3,7 @@ const router = express.Router();
 const productController = require('../controllers/productController');
 const authMiddleware = require('../middlewares/authMiddleware');
 
+// Solo define rutas, no lógica aquí
 router.get('/search', productController.buscarProductos);
 router.get('/', productController.obtenerProductos);
 router.post('/', authMiddleware, productController.crearProducto);
@@ -11,7 +12,6 @@ router.delete('/:id', authMiddleware, productController.eliminarProducto);
 router.get('/:id', productController.obtenerProductoPorId);
 
 module.exports = router;
-  const where = {};
   if (q) {
     where.nombre = { [require('sequelize').Op.like]: `%${q}%` };
   }

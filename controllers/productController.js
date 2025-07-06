@@ -4,37 +4,19 @@ const Resena = require('../models/Resena');
 
 // Crear producto
 exports.crearProducto = async (req, res) => {
-  res.json({ mensaje: 'Producto creado (implementa la lógica)' });
+  const producto = await Product.create(req.body);
+  res.status(201).json(producto);
 };
 
 // Obtener todos los productos (incluye artesano y calificación promedio)
 exports.obtenerProductos = async (req, res) => {
-  res.json([]);
-};
-
-// Obtener producto por ID
-exports.obtenerProductoPorId = async (req, res) => {
-  res.json({});
-};
-
-// Actualizar producto
-exports.actualizarProducto = async (req, res) => {
-  res.json({ mensaje: 'Producto actualizado (implementa la lógica)' });
-};
-
-// Eliminar producto
-exports.eliminarProducto = async (req, res) => {
-  res.json({ mensaje: 'Producto eliminado (implementa la lógica)' });
-};
-
-exports.buscarProductos = async (req, res) => {
-  res.json([]);
-};
-          as: 'artesano',
-          attributes: ['id', 'nombre_completo']
-        }
-      ]
-    });
+  try {
+    const where = {};
+    if (req.query.categoria) where.categoria = req.query.categoria;
+    if (req.query.ubicacion) where.ubicacion = req.query.ubicacion;
+    if (req.query.destacados) where.destacado = req.query.destacados === '1' || req.query.destacados === 'true';
+    if (req.query.usuarioId) where.usuarioId = req.query.usuarioId;
+    const products = await Product.findAll({ where, limit: 50 });
 
     // Calcular calificación promedio para cada producto
     const productsWithRating = await Promise.all(products.map(async (p) => {
@@ -59,15 +41,33 @@ exports.buscarProductos = async (req, res) => {
 
 // Obtener producto por ID
 exports.obtenerProductoPorId = async (req, res) => {
-  try {
-    const product = await Product.findByPk(req.params.id);
-    if (!product) return res.status(404).json({ mensaje: 'Producto no encontrado' });
-    res.status(200).json(product);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+  const producto = await Product.findByPk(req.params.id);
+  if (!producto) return res.status(404).json({ mensaje: 'Producto no encontrado' });
+  res.json(producto);
 };
 
+// Actualizar producto
+exports.actualizarProducto = async (req, res) => {
+  await Product.update(req.body, { where: { id: req.params.id } });
+  const producto = await Product.findByPk(req.params.id);
+  res.json(producto);
+};
+
+// Eliminar producto
+exports.eliminarProducto = async (req, res) => {
+  await Product.destroy({ where: { id: req.params.id } });
+  res.json({ mensaje: 'Producto eliminado' });
+};
+
+exports.buscarProductos = async (req, res) => {
+  const q = req.query.q;
+  const where = {};
+  if (q) {
+    where.titulo = { $like: `%${q}%` };
+  }
+  const productos = await Product.findAll({ where, limit: 20 });
+  res.json(productos);
+};
 // Actualizar producto
 exports.actualizarProducto = async (req, res) => {
   try {
