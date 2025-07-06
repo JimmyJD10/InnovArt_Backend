@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const userController = require('../controllers/userController');
-const auth = require('../middlewares/authMiddleware');
+const authMiddleware = require('../middlewares/authMiddleware');
 const admin = require('../middlewares/adminMiddleware');
 const { body } = require('express-validator');
 
@@ -41,24 +41,13 @@ router.post('/login',
 );
 
 // Obtener todos los usuarios (solo admin, excepto filtro de artesanos)
-router.get('/', async (req, res, next) => {
-  try {
-    // Permitir acceso público solo a la lista de artesanos
-    if (req.query.rol === 'artesano') {
-      return userController.obtenerUsuarios(req, res, next);
-    }
-    // Para otros casos, requiere admin
-    return auth(req, res, () => admin(req, res, () => userController.obtenerUsuarios(req, res, next)));
-  } catch (err) {
-    next(err);
-  }
-});
+router.get('/', userController.getAllUsers);
 
 // Obtener usuario por ID (público)
 router.get('/:id', userController.obtenerUsuarioPorId);
 
 // Perfil propio (requiere login)
-router.get('/me', auth, userController.obtenerPerfilPropio);
+router.get('/me', authMiddleware, userController.obtenerPerfilPropio);
 
 // Actualizar y eliminar usuario (puedes proteger si quieres)
 router.put('/:id', userController.actualizarUsuario);
