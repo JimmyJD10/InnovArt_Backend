@@ -93,7 +93,17 @@ exports.login = async (req, res) => {
   if (!match) return res.status(401).json({ mensaje: 'Credenciales inválidas' });
   const token = jwt.sign({ id: user.id, rol: user.rol }, process.env.JWT_SECRET, { expiresIn: '7d' });
   const { contraseña: _, ...userData } = user.toJSON();
-  res.json({ token, user: userData });
+  res.json({
+    token,
+    user: {
+      id: user.id,
+      nombre_completo: user.nombre_completo,
+      correo: user.correo,
+      rol: user.rol,
+      foto_perfil: user.foto_perfil,
+      // ...otros campos necesarios...
+    }
+  });
 };
 
 exports.crearUsuario = async (req, res) => {
