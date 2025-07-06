@@ -57,14 +57,7 @@ exports.buscarResenas = async (req, res) => {
     const { q } = req.query;
     const where = {};
     if (q) {
-      where.comentario = { $like: `%${q}%` };
-    }
-    const resenas = await Resena.findAll({ where, limit: 10 });
-    res.json(resenas);
-  } catch (err) {
-    res.status(500).json({ error: 'Error al buscar reseñas' });
-  }
-};
+      where.comentario = { $like: `%${q}%` }; // Considerar cambiar $like por [Op.like]
     }
     const resenas = await Resena.findAll({ where, limit: 10 });
     res.json(resenas);
