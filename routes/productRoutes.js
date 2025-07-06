@@ -3,25 +3,25 @@ const router = express.Router();
 const productController = require('../controllers/productController');
 const authMiddleware = require('../middlewares/authMiddleware');
 
-// Solo define rutas, no lógica aquí
+// Buscar productos con filtros
 router.get('/search', productController.buscarProductos);
+
+// Obtener todos los productos
 router.get('/', productController.obtenerProductos);
-router.post('/', authMiddleware, productController.crearProducto);
-router.put('/:id', authMiddleware, productController.actualizarProducto);
-router.delete('/:id', authMiddleware, productController.eliminarProducto);
+
+// Obtener producto por ID
 router.get('/:id', productController.obtenerProductoPorId);
 
+// Crear producto (protegido)
+router.post('/', authMiddleware, productController.crearProducto);
+
+// Actualizar producto (protegido)
+router.put('/:id', authMiddleware, productController.actualizarProducto);
+
+// Eliminar producto (protegido)
+router.delete('/:id', authMiddleware, productController.eliminarProducto);
+
 module.exports = router;
-  if (q) {
-    where.nombre = { [require('sequelize').Op.like]: `%${q}%` };
-  }
-  if (categoria) {
-    where.categoria = categoria;
-  }
-  if (ubicacion) {
-    where.ubicacion = ubicacion;
-  }
-  const productos = await require('../models/Product').findAll({ where, limit: 10 });
   res.json(productos);
 });
 

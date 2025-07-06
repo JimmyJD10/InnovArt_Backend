@@ -5,8 +5,12 @@ const Resena = require('../models/Resena');
 
 // Crear producto
 exports.crearProducto = async (req, res) => {
-  const producto = await Product.create(req.body);
-  res.status(201).json(producto);
+  try {
+    const producto = await Product.create(req.body);
+    res.status(201).json(producto);
+  } catch (error) {
+    res.status(500).json({ error: 'Error al crear producto' });
+  }
 };
 
 // Obtener todos los productos (incluye artesano y calificación promedio)
@@ -42,31 +46,44 @@ exports.obtenerProductos = async (req, res) => {
 
 // Obtener producto por ID
 exports.obtenerProductoPorId = async (req, res) => {
-  const producto = await Product.findByPk(req.params.id);
-  if (!producto) return res.status(404).json({ mensaje: 'Producto no encontrado' });
-  res.json(producto);
+  try {
+    const producto = await Product.findByPk(req.params.id);
+    if (!producto) return res.status(404).json({ error: 'Producto no encontrado' });
+    res.json(producto);
+  } catch (error) {
+    res.status(500).json({ error: 'Error al obtener producto' });
+  }
 };
 
 // Actualizar producto
 exports.actualizarProducto = async (req, res) => {
-  await Product.update(req.body, { where: { id: req.params.id } });
-  const producto = await Product.findByPk(req.params.id);
-  res.json(producto);
+  try {
+    await Product.update(req.body, { where: { id: req.params.id } });
+    const producto = await Product.findByPk(req.params.id);
+    res.json(producto);
+  } catch (error) {
+    res.status(500).json({ error: 'Error al actualizar producto' });
+  }
 };
 
 // Eliminar producto
 exports.eliminarProducto = async (req, res) => {
-  await Product.destroy({ where: { id: req.params.id } });
-  res.json({ mensaje: 'Producto eliminado' });
+  try {
+    await Product.destroy({ where: { id: req.params.id } });
+    res.json({ mensaje: 'Producto eliminado' });
+  } catch (error) {
+    res.status(500).json({ error: 'Error al eliminar producto' });
+  }
 };
 
+// Buscar productos con filtros
 exports.buscarProductos = async (req, res) => {
   try {
     const { q, categoria, ubicacion } = req.query;
     const where = {};
 
     if (q) {
-      where.titulo = { [Op.like]: `%${q}%` }; // Cambia 'nombre' por 'titulo' si tu modelo usa ese campo
+      where.titulo = { [Op.like]: `%${q}%` }; // Usa 'titulo' si tu modelo lo tiene, si no, cambia por 'nombre'
     }
     if (categoria) {
       where.categoria = categoria;
@@ -78,15 +95,7 @@ exports.buscarProductos = async (req, res) => {
     const productos = await Product.findAll({ where, limit: 10 });
     res.json(productos);
   } catch (error) {
-    console.error('Error buscando productos:', error);
-    res.status(500).json({ error: 'Error buscando productos' });
-  }
-};
-  try {
-    const deleted = await Product.destroy({ where: { id: req.params.id } });
-    if (!deleted) return res.status(404).json({ mensaje: 'Producto no encontrado' });
-    res.status(200).json({ mensaje: 'Producto eliminado' });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error('Error al buscar productos:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
   }
 };

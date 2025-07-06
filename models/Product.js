@@ -4,15 +4,16 @@ const User = require('./User');
 
 const Product = sequelize.define('Product', {
   id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
-  titulo: { type: DataTypes.STRING(100), allowNull: false },
-  descripcion: { type: DataTypes.TEXT },
-  precio: { type: DataTypes.DECIMAL(10,2), allowNull: false },
-  imagen: { type: DataTypes.STRING(255) },
-  usuarioId: { type: DataTypes.INTEGER },
-  destacado: {
-    type: DataTypes.BOOLEAN,
-    defaultValue: false,
-  }
+  titulo: DataTypes.STRING,
+  descripcion: DataTypes.TEXT,
+  precio: DataTypes.FLOAT,
+  imagen: DataTypes.STRING,
+  categoria: DataTypes.STRING,
+  ubicacion: DataTypes.STRING,
+  usuarioId: DataTypes.INTEGER,
+  destacado: DataTypes.BOOLEAN,
+  stock: DataTypes.INTEGER,
+  fecha_publicacion: DataTypes.DATE
 }, {
   tableName: 'productos',
   timestamps: false
