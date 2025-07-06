@@ -19,9 +19,9 @@
       console.error('❌ Error al conectar con la base de datos:', err);
     });
 
-
-
-  setInterval(() => {}, 1000 * 60 * 60); // Mantiene el proceso vivo para debug  process.on('uncaughtException', err => {
+  setInterval(() => {}, 1000 * 60 * 60); // Mantiene el proceso vivo para debug
+  
+  process.on('uncaughtException', err => {
     console.error('Uncaught Exception:', err);
   });
   process.on('unhandledRejection', err => {
