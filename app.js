@@ -13,18 +13,16 @@ const auth = require('./middlewares/authMiddleware');
 
 // Rutas
 const userRoutes = require('./routes/userRoutes');
-app.use('/api/users', userRoutes);
-
 const productRoutes = require('./routes/productRoutes');
-app.use('/api/products', productRoutes);
-
 const resenaRoutes = require('./routes/resenaRoutes');
-app.use('/api/resenas', resenaRoutes);
-
 const mensajeRoutes = require('./routes/mensajeRoutes');
-app.use('/api/mensajes', mensajeRoutes);
-
 const pedidoRoutes = require('./routes/pedidoRoutes');
+app.use('/api/users', userRoutes);
+app.use('/api/products', productRoutes);
+app.use('/api/resenas', resenaRoutes);
+app.use('/api/mensajes', mensajeRoutes);
+app.use('/api/pedidos', pedidoRoutes);
+
 // Ejemplo: proteger pedidos
 app.use('/api/pedidos', auth, pedidoRoutes);
 

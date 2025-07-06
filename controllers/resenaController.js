@@ -1,28 +1,28 @@
 const Resena = require('../models/Resena');
 
 exports.crearResena = async (req, res) => {
-  try {
-    const resena = await Resena.create(req.body);
-    res.status(201).json(resena);
-  } catch (error) {
-    res.status(400).json({ error: error.message });
-  }
+  res.json({ mensaje: 'Reseña creada (implementa la lógica)' });
 };
 
 exports.obtenerResenas = async (req, res) => {
-  try {
-    const where = {};
-    if (req.query.destacadas === '1' || req.query.destacadas === 'true') {
-      where.destacada = true;
-    }
-    // Filtro por productoId o artesanoId
-    if (req.query.productoId) {
-      where.productoId = req.query.productoId;
-    }
-    if (req.query.artesanoId) {
-      where.artesanoId = req.query.artesanoId;
-    }
-    const resenas = await Resena.findAll({ where, limit: 10, order: [['fecha', 'DESC']] });
+  res.json([]);
+};
+
+exports.obtenerResenaPorId = async (req, res) => {
+  res.json({});
+};
+
+exports.actualizarResena = async (req, res) => {
+  res.json({ mensaje: 'Reseña actualizada (implementa la lógica)' });
+};
+
+exports.eliminarResena = async (req, res) => {
+  res.json({ mensaje: 'Reseña eliminada (implementa la lógica)' });
+};
+
+exports.buscarResenas = async (req, res) => {
+  res.json([]);
+};
     // Incluye productoId y artesanoId en la respuesta
     res.json(resenas.map(r => ({
       ...r.toJSON(),

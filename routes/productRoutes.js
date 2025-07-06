@@ -1,16 +1,16 @@
 const express = require('express');
 const router = express.Router();
 const productController = require('../controllers/productController');
-const auth = require('../middlewares/authMiddleware');
-const admin = require('../middlewares/adminMiddleware');
+const authMiddleware = require('../middlewares/authMiddleware');
 
-router.post('/', auth, admin, productController.crearProducto);
+router.get('/search', productController.buscarProductos);
 router.get('/', productController.obtenerProductos);
+router.post('/', authMiddleware, productController.crearProducto);
+router.put('/:id', authMiddleware, productController.actualizarProducto);
+router.delete('/:id', authMiddleware, productController.eliminarProducto);
 router.get('/:id', productController.obtenerProductoPorId);
-router.put('/:id', auth, admin, productController.actualizarProducto);
-router.delete('/:id', auth, admin, productController.eliminarProducto);
-router.get('/search', async (req, res) => {
-  const { q, categoria, ubicacion } = req.query;
+
+module.exports = router;
   const where = {};
   if (q) {
     where.nombre = { [require('sequelize').Op.like]: `%${q}%` };

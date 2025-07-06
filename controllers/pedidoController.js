@@ -1,28 +1,28 @@
 const Pedido = require('../models/Pedido');
 
 exports.crearPedido = async (req, res) => {
-  try {
-    const pedido = await Pedido.create(req.body);
-    res.status(201).json(pedido);
-  } catch (error) {
-    res.status(400).json({ error: error.message });
-  }
+  res.json({ mensaje: 'Pedido creado (implementa la lógica)' });
 };
 
 exports.obtenerPedidos = async (req, res) => {
-  try {
-    const pedidos = await Pedido.findAll();
-    res.status(200).json(pedidos);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+  res.json([]);
 };
 
 exports.obtenerPedidoPorId = async (req, res) => {
-  try {
-    const pedido = await Pedido.findByPk(req.params.id);
-    if (!pedido) return res.status(404).json({ mensaje: 'Pedido no encontrado' });
-    res.status(200).json(pedido);
+  res.json({});
+};
+
+exports.actualizarPedido = async (req, res) => {
+  res.json({ mensaje: 'Pedido actualizado (implementa la lógica)' });
+};
+
+exports.eliminarPedido = async (req, res) => {
+  res.json({ mensaje: 'Pedido eliminado (implementa la lógica)' });
+};
+
+exports.buscarPedidos = async (req, res) => {
+  res.json([]);
+};
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

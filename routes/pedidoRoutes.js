@@ -1,13 +1,13 @@
 const express = require('express');
 const router = express.Router();
 const pedidoController = require('../controllers/pedidoController');
-const auth = require('../middlewares/authMiddleware');
-const admin = require('../middlewares/adminMiddleware');
+const authMiddleware = require('../middlewares/authMiddleware');
 
-router.post('/', auth, pedidoController.crearPedido);
-router.get('/', auth, pedidoController.obtenerPedidos);
-router.get('/:id', auth, pedidoController.obtenerPedidoPorId);
-router.put('/:id', auth, pedidoController.actualizarPedido);
-router.delete('/:id', auth, admin, pedidoController.eliminarPedido);
+router.get('/search', pedidoController.buscarPedidos);
+router.get('/', pedidoController.obtenerPedidos);
+router.post('/', authMiddleware, pedidoController.crearPedido);
+router.put('/:id', authMiddleware, pedidoController.actualizarPedido);
+router.delete('/:id', authMiddleware, pedidoController.eliminarPedido);
+router.get('/:id', pedidoController.obtenerPedidoPorId);
 
 module.exports = router;

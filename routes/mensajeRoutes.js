@@ -1,12 +1,13 @@
 const express = require('express');
 const router = express.Router();
 const mensajeController = require('../controllers/mensajeController');
-const auth = require('../middlewares/authMiddleware');
-const admin = require('../middlewares/adminMiddleware');
+const authMiddleware = require('../middlewares/authMiddleware');
 
-router.post('/', mensajeController.crearMensaje);
+router.get('/search', mensajeController.buscarMensajes);
 router.get('/', mensajeController.obtenerMensajes);
+router.post('/', authMiddleware, mensajeController.crearMensaje);
+router.put('/:id', authMiddleware, mensajeController.actualizarMensaje);
+router.delete('/:id', authMiddleware, mensajeController.eliminarMensaje);
 router.get('/:id', mensajeController.obtenerMensajePorId);
-router.delete('/:id', auth, admin, mensajeController.eliminarMensaje);
 
 module.exports = router;

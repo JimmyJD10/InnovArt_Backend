@@ -4,32 +4,32 @@ const Resena = require('../models/Resena');
 
 // Crear producto
 exports.crearProducto = async (req, res) => {
-  try {
-    const product = await Product.create(req.body);
-    res.status(201).json(product);
-  } catch (error) {
-    res.status(400).json({ error: error.message });
-  }
+  res.json({ mensaje: 'Producto creado (implementa la lógica)' });
 };
 
 // Obtener todos los productos (incluye artesano y calificación promedio)
 exports.obtenerProductos = async (req, res) => {
-  try {
-    const where = {};
-    if (req.query.destacados === '1' || req.query.destacados === 'true') {
-      where.destacado = true;
-    }
-    // Depuración: verifica que User esté definido
-    if (!User) {
-      console.error('User model is not defined');
-      return res.status(500).json({ mensaje: 'Error interno: User model' });
-    }
-    const products = await Product.findAll({
-      where,
-      order: [['id', 'DESC']],
-      include: [
-        {
-          model: User,
+  res.json([]);
+};
+
+// Obtener producto por ID
+exports.obtenerProductoPorId = async (req, res) => {
+  res.json({});
+};
+
+// Actualizar producto
+exports.actualizarProducto = async (req, res) => {
+  res.json({ mensaje: 'Producto actualizado (implementa la lógica)' });
+};
+
+// Eliminar producto
+exports.eliminarProducto = async (req, res) => {
+  res.json({ mensaje: 'Producto eliminado (implementa la lógica)' });
+};
+
+exports.buscarProductos = async (req, res) => {
+  res.json([]);
+};
           as: 'artesano',
           attributes: ['id', 'nombre_completo']
         }

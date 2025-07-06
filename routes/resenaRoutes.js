@@ -1,13 +1,13 @@
 const express = require('express');
 const router = express.Router();
 const resenaController = require('../controllers/resenaController');
-const auth = require('../middlewares/authMiddleware');
-const admin = require('../middlewares/adminMiddleware');
+const authMiddleware = require('../middlewares/authMiddleware');
 
-router.post('/', resenaController.crearResena);
+router.get('/search', resenaController.buscarResenas);
 router.get('/', resenaController.obtenerResenas);
+router.post('/', authMiddleware, resenaController.crearResena);
+router.put('/:id', authMiddleware, resenaController.actualizarResena);
+router.delete('/:id', authMiddleware, resenaController.eliminarResena);
 router.get('/:id', resenaController.obtenerResenaPorId);
-router.put('/:id', resenaController.actualizarResena);
-router.delete('/:id', auth, admin, resenaController.eliminarResena);
 
 module.exports = router;

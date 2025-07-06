@@ -95,3 +95,35 @@ exports.login = async (req, res) => {
   const { contraseña: _, ...userData } = user.toJSON();
   res.json({ token, user: userData });
 };
+
+exports.crearUsuario = async (req, res) => {
+  res.json({ mensaje: 'Usuario creado (implementa la lógica)' });
+};
+
+exports.obtenerUsuarios = async (req, res) => {
+  res.json([]);
+};
+
+exports.actualizarUsuario = async (req, res) => {
+  res.json({ mensaje: 'Usuario actualizado (implementa la lógica)' });
+};
+
+exports.eliminarUsuario = async (req, res) => {
+  res.json({ mensaje: 'Usuario eliminado (implementa la lógica)' });
+};
+
+exports.obtenerUsuarioPorId = async (req, res) => {
+  res.json({});
+};
+
+exports.buscarUsuarios = async (req, res) => {
+  res.json([]);
+};
+
+exports.getMe = (req, res) => {
+  res.json(req.user);
+};
+
+exports.login = async (req, res) => {
+  res.json({ token: 'fake-token', user: { id: 1, nombre_completo: 'Demo' } });
+};
