@@ -1,39 +1,65 @@
 const Mensaje = require('../models/Mensaje');
 
-exports.crearMensaje = async (req, res) => {
-  res.json({ mensaje: 'Mensaje creado (implementa la lógica)' });
-};
-
 exports.obtenerMensajes = async (req, res) => {
-  res.json([]);
-};
-
-exports.actualizarMensaje = async (req, res) => {
-  res.json({ mensaje: 'Mensaje actualizado (implementa la lógica)' });
-};
-
-exports.eliminarMensaje = async (req, res) => {
-  res.json({ mensaje: 'Mensaje eliminado (implementa la lógica)' });
+  try {
+    const where = {};
+    if (req.query.remitenteId) where.remitenteId = req.query.remitenteId;
+    if (req.query.destinatarioId) where.destinatarioId = req.query.destinatarioId;
+    const mensajes = await Mensaje.findAll({ where });
+    res.json(mensajes);
+  } catch (error) {
+    res.status(500).json({ error: 'Error al obtener mensajes' });
+  }
 };
 
 exports.obtenerMensajePorId = async (req, res) => {
-  res.json({});
+  try {
+    const mensaje = await Mensaje.findByPk(req.params.id);
+    if (!mensaje) return res.status(404).json({ error: 'Mensaje no encontrado' });
+    res.json(mensaje);
+  } catch (error) {
+    res.status(500).json({ error: 'Error al obtener mensaje' });
+  }
 };
 
-exports.buscarMensajes = async (req, res) => {
-  res.json([]);
-};
+exports.crearMensaje = async (req, res) => {
+  try {
+    const mensaje = await Mensaje.create(req.body);
+    res.status(201).json(mensaje);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ error: 'Error al crear mensaje' });
+  }
+};
+
+exports.actualizarMensaje = async (req, res) => {
+  try {
+    await Mensaje.update(req.body, { where: { id: req.params.id } });
+    const mensaje = await Mensaje.findByPk(req.params.id);
+    res.json(mensaje);
+  } catch (error) {
+    res.status(500).json({ error: 'Error al actualizar mensaje' });
   }
 };
 
 exports.eliminarMensaje = async (req, res) => {
   try {
-    const deleted = await Mensaje.destroy({ where: { id: req.params.id } });
-    if (!deleted) return res.status(404).json({ mensaje: 'Mensaje no encontrado' });
-    res.status(200).json({ mensaje: 'Mensaje eliminado' });
+    await Mensaje.destroy({ where: { id: req.params.id } });
+    res.json({ mensaje: 'Mensaje eliminado' });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ error: 'Error al eliminar mensaje' });
+  }
+};
+
+exports.buscarMensajes = async (req, res) => {
+  try {
+    const { q } = req.query;
+    const where = {};
+    if (q) {
+      where.contenido = { $like: `%${q}%` };
+    }
+    const mensajes = await Mensaje.findAll({ where, limit: 10 });
+    res.json(mensajes);
+  } catch (error) {
+    res.status(500).json({ error: 'Error al buscar mensajes' });
   }
 };
