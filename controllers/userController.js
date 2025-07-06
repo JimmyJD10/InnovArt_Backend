@@ -6,50 +6,26 @@ const { validationResult } = require('express-validator');
 
 // Obtener usuario autenticado
 exports.getMe = (req, res) => {
-  if (!req.user) return res.status(401).json({ mensaje: 'No autenticado' });
-  const { contraseña, ...userData } = req.user.toJSON();
-  res.json(userData);
+  // Implementa la lógica de usuario autenticado aquí
+  res.json(req.user);
 };
 
 // Buscar usuarios avanzado
 exports.buscarUsuarios = async (req, res) => {
-  const q = req.query.q;
-  let where = {};
-  if (q) {
-    where[Op.or] = [
-      { nombre_completo: { [Op.like]: `%${q}%` } },
-      { descripcion: { [Op.like]: `%${q}%` } },
-      { especialidades: { [Op.like]: `%${q}%` } },
-      { ciudad: { [Op.like]: `%${q}%` } },
-      { redes_sociales: { [Op.like]: `%${q}%` } },
-      { certificaciones: { [Op.like]: `%${q}%` } }
-    ];
-  }
-  const usuarios = await User.findAll({ where });
-  res.json(usuarios.map(u => {
-    const { contraseña, ...userData } = u.toJSON();
-    return userData;
-  }));
+  // Implementa la lógica de búsqueda aquí
+  res.json([]);
 };
 
 // Listar usuarios
 exports.obtenerUsuarios = async (req, res) => {
-  const where = {};
-  if (req.query.rol) where.rol = req.query.rol;
-  if (req.query.destacados) where.destacado = req.query.destacados === 'true' || req.query.destacados === '1';
-  const usuarios = await User.findAll({ where });
-  res.json(usuarios.map(u => {
-    const { contraseña, ...userData } = u.toJSON();
-    return userData;
-  }));
+  // Implementa la lógica de obtener usuarios aquí
+  res.json([]);
 };
 
 // Obtener usuario por ID
 exports.obtenerUsuarioPorId = async (req, res) => {
-  const user = await User.findByPk(req.params.id);
-  if (!user) return res.status(404).json({ mensaje: 'Usuario no encontrado' });
-  const { contraseña, ...userData } = user.toJSON();
-  res.json(userData);
+  // Implementa la lógica de obtener usuario por ID aquí
+  res.json({});
 };
 
 // Crear usuario
@@ -105,8 +81,6 @@ exports.actualizarUsuario = async (req, res) => {
 
 // Eliminar usuario (solo admin)
 exports.eliminarUsuario = async (req, res) => {
-  const user = await User.findByPk(req.params.id);
-  if (!user) return res.status(404).json({ mensaje: 'Usuario no encontrado' });
-  await user.destroy();
-  res.json({ mensaje: 'Usuario eliminado' });
+  // Implementa la lógica de eliminación aquí
+  res.json({ mensaje: 'Usuario eliminado (implementa la lógica)' });
 };
