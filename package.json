@@ -1,4 +1,9 @@
 {
+  "name": "innovart-backend",
+  "version": "1.0.0",
+  "description": "API RESTful para InnovArt - Red Social y Marketplace de Artesanos",
+  "main": "server.js",
+  "license": "MIT",
   "dependencies": {
     "bcryptjs": "^3.0.2",
     "cors": "^2.8.5",
@@ -13,6 +18,7 @@
     "nodemon": "^3.1.10"
   },
   "scripts": {
-    "dev": "nodemon server.js"
+    "dev": "nodemon server.js",
+    "start": "node server.js"
   }
 }

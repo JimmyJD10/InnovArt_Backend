@@ -12,7 +12,10 @@ module.exports = async (req, res, next) => {
     if (!user) return res.status(401).json({ mensaje: 'Usuario no encontrado' });
     req.user = user;
     next();
-  } catch {
+  } catch (err) {
+    if (err.name === 'TokenExpiredError') {
+      return res.status(401).json({ mensaje: 'Token expirado, inicia sesión nuevamente' });
+    }
     return res.status(401).json({ mensaje: 'Token inválido' });
   }
 };

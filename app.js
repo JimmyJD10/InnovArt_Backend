@@ -4,10 +4,14 @@ const cors = require('cors');
 require('dotenv').config();
 
 const app = express();
-
-// Middlewares
 app.use(cors());
 app.use(express.json());
+
+// Logging básico
+app.use((req, res, next) => {
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.originalUrl}`);
+  next();
+});
 
 const auth = require('./middlewares/authMiddleware');
 
@@ -33,7 +37,7 @@ app.get('/', (req, res) => {
 
 // Middleware global de manejo de errores
 app.use((err, req, res, next) => {
-  console.error('Error global:', err);
+  console.error('Error:', err);
   res.status(err.status || 500).json({ mensaje: err.message || 'Error interno del servidor' });
 });
 
