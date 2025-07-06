@@ -1,3 +1,4 @@
+const { Op } = require('sequelize'); // ✅ Importa Op de Sequelize
 const Resena = require('../models/Resena');
 
 exports.crearResena = async (req, res) => {
@@ -15,7 +16,10 @@ exports.obtenerResenas = async (req, res) => {
     if (req.query.clienteId) where.clienteId = req.query.clienteId;
     if (req.query.artesanoId) where.artesanoId = req.query.artesanoId;
     if (req.query.productoId) where.productoId = req.query.productoId;
-    if (req.query.destacadas) where.destacada = req.query.destacadas === '1' || req.query.destacadas === 'true';
+    if (req.query.destacadas)
+      where.destacada =
+        req.query.destacadas === '1' || req.query.destacadas === 'true';
+
     const resenas = await Resena.findAll({ where });
     res.json(resenas);
   } catch (err) {
@@ -26,7 +30,8 @@ exports.obtenerResenas = async (req, res) => {
 exports.obtenerResenaPorId = async (req, res) => {
   try {
     const resena = await Resena.findByPk(req.params.id);
-    if (!resena) return res.status(404).json({ error: 'Reseña no encontrada' });
+    if (!resena)
+      return res.status(404).json({ error: 'Reseña no encontrada' });
     res.json(resena);
   } catch (err) {
     res.status(500).json({ error: 'Error al obtener reseña' });
@@ -57,8 +62,9 @@ exports.buscarResenas = async (req, res) => {
     const { q } = req.query;
     const where = {};
     if (q) {
-      where.comentario = { $like: `%${q}%` }; // Considerar cambiar $like por [Op.like]
+      where.comentario = { [Op.like]: `%${q}%` }; // ✅ Operador correcto
     }
+
     const resenas = await Resena.findAll({ where, limit: 10 });
     res.json(resenas);
   } catch (err) {
