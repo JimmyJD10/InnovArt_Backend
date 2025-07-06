@@ -4,7 +4,10 @@ const cors = require('cors');
 require('dotenv').config();
 
 const app = express();
-app.use(cors());
+app.use(cors({
+  origin: '*', // O pon el dominio de tu frontend en producción
+  credentials: true
+}));
 app.use(express.json());
 
 // Logging básico
