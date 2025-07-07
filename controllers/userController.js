@@ -60,7 +60,7 @@ async function crearUsuario(req, res) {
       nombre_completo, correo, contraseña, rol,
       telefono, genero, fecha_nacimiento, direccion, ciudad, pais,
       descripcion, especialidades, portafolio, redes_sociales,
-      metodos_pago_aceptados, certificaciones, experiencia_anios, ubicacion_precisa
+      metodos_pago_aceptados, certificaciones, experiencia_años, ubicacion_precisa
     } = req.body;
 
     const usuarioExistente = await User.findOne({ where: { correo } });
@@ -77,7 +77,7 @@ async function crearUsuario(req, res) {
       rol: rol || 'cliente',
       telefono, genero, fecha_nacimiento, direccion, ciudad, pais,
       descripcion, especialidades, portafolio, redes_sociales,
-      metodos_pago_aceptados, certificaciones, experiencia_anios, ubicacion_precisa
+      metodos_pago_aceptados, certificaciones, experiencia_años, ubicacion_precisa
     });
 
     const { contraseña: _, ...userData } = nuevoUsuario.toJSON();
@@ -93,7 +93,7 @@ async function actualizarUsuario(req, res) {
   const camposPermitidos = [
     'nombre_completo', 'telefono', 'direccion', 'ciudad', 'pais', 'foto_perfil',
     'descripcion', 'especialidades', 'portafolio', 'redes_sociales', 'disponibilidad',
-    'metodos_pago_aceptados', 'ubicacion_precisa', 'certificaciones', 'experiencia_anios', 'favoritos', 'genero', 'fecha_nacimiento'
+    'metodos_pago_aceptados', 'ubicacion_precisa', 'certificaciones', 'experiencia_años', 'favoritos', 'genero', 'fecha_nacimiento'
   ];
 
   if (req.user.rol !== 'admin' && req.user.id !== parseInt(req.params.id)) {

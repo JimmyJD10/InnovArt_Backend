@@ -101,17 +101,6 @@ exports.buscarProductos = async (req, res) => {
       where.categoria = categoria;    where.ubicacion = ubicacion;
     }    }
 
-
-
-
-
-
-
-
-
-
-
-
 };  }    res.status(500).json({ error: 'Error interno del servidor' });    console.error('Error al buscar productos:', error);  } catch (error) {    res.json(productos);    const productos = await Product.findAll({ where, limit: 10 });    }      where.ubicacion = ubicacion;    if (ubicacion) {
     const productos = await Product.findAll({ where, limit: 10 });
     res.json(productos);

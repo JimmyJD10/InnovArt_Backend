@@ -3,5 +3,11 @@ const router = express.Router();
 const reseñaController = require('../controllers/reseñaController');
 const authMiddleware = require('../middlewares/authMiddleware');
 
-// ...existing code, reemplaza todas las ocurrencias de resena por reseña...
+router.get('/search', reseñaController.buscarReseñas);
+router.get('/', reseñaController.obtenerReseñas);
+router.post('/', authMiddleware, reseñaController.crearReseña);
+router.put('/:id', authMiddleware, reseñaController.actualizarReseña);
+router.delete('/:id', authMiddleware, reseñaController.eliminarReseña);
+router.get('/:id', reseñaController.obtenerReseñaPorId);
+
 module.exports = router;
