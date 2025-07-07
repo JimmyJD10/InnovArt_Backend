@@ -34,7 +34,7 @@ async function buscarUsuarios(req, res) {
 }
 
 // Listar usuarios
-exports.obtenerUsuarios = async (req, res) => {
+const obtenerUsuarios = async (req, res) => {
   try {
     const where = {};
     if (req.query.rol) where.rol = req.query.rol;

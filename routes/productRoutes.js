@@ -7,7 +7,7 @@ const authMiddleware = require('../middlewares/authMiddleware');
 // Buscar productos con filtros
 router.get('/search', productController.buscarProductos);
 
-// Obtener todos los productos
+// Obtener todos los productos (con filtros por query)
 router.get('/', productController.obtenerProductos);
 
 // Obtener producto por ID
@@ -18,18 +18,11 @@ router.post('/',
   authMiddleware,
   body('titulo').notEmpty().withMessage('Título requerido'),
   body('precio').isFloat({ gt: 0 }).withMessage('Precio debe ser mayor a 0'),
-  // ...agrega más validaciones según tus campos...
   productController.crearProducto
 );
 
 // Actualizar producto (protegido)
-router.put('/:id',
-  authMiddleware,
-  body('titulo').optional().notEmpty().withMessage('Título requerido'),
-  body('precio').optional().isFloat({ gt: 0 }).withMessage('Precio debe ser mayor a 0'),
-  // ...agrega más validaciones según tus campos...
-  productController.actualizarProducto
-);
+router.put('/:id', authMiddleware, productController.actualizarProducto);
 
 // Eliminar producto (protegido)
 router.delete('/:id', authMiddleware, productController.eliminarProducto);
