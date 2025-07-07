@@ -28,7 +28,7 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use('/api/pedidos', pedidoRoutes);thMiddleware');
+app.use('/api/pedidos', pedidoRoutes);
 
 // Ejemplo: proteger pedidos
 app.use('/api/pedidos', auth, pedidoRoutes);tes');
