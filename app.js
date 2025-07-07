@@ -1,14 +1,26 @@
 // app.js
 const express = require('express');
 const cors = require('cors');
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
 require('dotenv').config();
 
 const app = express();
+
+app.use(helmet());
 app.use(cors({
-  origin: '*', // O pon el dominio de tu frontend en producción
+  origin: '*', // Cambia esto por el dominio de tu frontend en producción
   credentials: true
 }));
 app.use(express.json());
+
+// Rate limiting: 100 requests por 15 minutos por IP
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  message: 'Demasiadas peticiones, intenta más tarde.'
+});
+app.use(limiter);
 
 // Logging básico
 app.use((req, res, next) => {
@@ -16,20 +28,20 @@ app.use((req, res, next) => {
   next();
 });
 
-const auth = require('./middlewares/authMiddleware');
+app.use('/api/pedidos', pedidoRoutes);thMiddleware');
 
-// Rutas
-const userRoutes = require('./routes/userRoutes');
+// Ejemplo: proteger pedidos
+app.use('/api/pedidos', auth, pedidoRoutes);tes');
 const productRoutes = require('./routes/productRoutes');
-const resenaRoutes = require('./routes/resenaRoutes');
-const mensajeRoutes = require('./routes/mensajeRoutes');
-const pedidoRoutes = require('./routes/pedidoRoutes');
-app.use('/api/users', userRoutes);
+// Ruta de pruebas = require('./routes/resenaRoutes');
+app.get('/', (req, res) => {e('./routes/mensajeRoutes');
+  res.send('API backend funcionando');/pedidoRoutes');
+});.use('/api/users', userRoutes);
 app.use('/api/products', productRoutes);
-app.use('/api/resenas', resenaRoutes);
-app.use('/api/mensajes', mensajeRoutes);
-app.use('/api/pedidos', pedidoRoutes);
-
+const errorHandler = require('./middlewares/errorHandler');
+app.use(errorHandler);utes);
+outes);
+module.exports = app;
 // Ejemplo: proteger pedidos
 app.use('/api/pedidos', auth, pedidoRoutes);
 

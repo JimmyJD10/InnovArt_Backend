@@ -32,7 +32,7 @@ async function seed() {
       metodos_pago_aceptados: null,
       ubicacion_precisa: null,
       certificaciones: null,
-      experiencia_anios: null,
+      experiencia_años: null,
       // Cliente extra
       favoritos: JSON.stringify([2, 4, 6, 8].map(n => n + i))
     });
@@ -69,7 +69,7 @@ async function seed() {
       metodos_pago_aceptados: 'Efectivo,Transferencia,Yape,Plin',
       ubicacion_precisa: `-13.5${i},-71.9${i}`,
       certificaciones: JSON.stringify([`Certificado Artesanal ${i}`, `Premio Regional ${i}`]),
-      experiencia_anios: Math.floor(Math.random() * 20) + 1,
+      experiencia_años: Math.floor(Math.random() * 20) + 1,
       // Cliente extra (null para artesanos)
       favoritos: null
     });

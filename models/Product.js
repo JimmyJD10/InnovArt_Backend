@@ -22,4 +22,6 @@ const Product = sequelize.define('Product', {
 // Relación correcta
 Product.belongsTo(User, { as: 'artesano', foreignKey: 'usuarioId' });
 
+// Si tienes algún campo anio/anios, cámbialo por año/años
+
 module.exports = Product;

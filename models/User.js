@@ -28,7 +28,7 @@ const User = sequelize.define('User', {
   metodos_pago_aceptados: { type: DataTypes.STRING(255) }, // CSV o JSON string
   ubicacion_precisa: { type: DataTypes.STRING(100) }, // lat,lng
   certificaciones: { type: DataTypes.TEXT }, // JSON string o texto
-  experiencia_anios: { type: DataTypes.INTEGER, defaultValue: 0 },
+  experiencia_años: { type: DataTypes.INTEGER, defaultValue: 0 },
 
   // Cliente extra
   favoritos: { type: DataTypes.TEXT }, // JSON string de IDs

@@ -2,6 +2,7 @@ const { Op } = require('sequelize');
 const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const { validationResult } = require('express-validator');
 
 // Obtener usuario autenticado
 async function getMe(req, res) {
@@ -142,6 +143,24 @@ async function login(req, res) {
   });
 }
 
+// Registro de usuario
+exports.registrarUsuario = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ mensaje: errors.array()[0].msg });
+  }
+  crearUsuario(req, res);
+};
+
+// Login de usuario
+exports.loginUsuario = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ mensaje: errors.array()[0].msg });
+  }
+  login(req, res);
+};
+
 // Exportación clara
 module.exports = {
   getMe,
@@ -151,5 +170,7 @@ module.exports = {
   crearUsuario,
   actualizarUsuario,
   eliminarUsuario,
-  login
+  login,
+  registrarUsuario,
+  loginUsuario
 };

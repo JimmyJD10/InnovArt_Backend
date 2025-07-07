@@ -7,15 +7,15 @@ module.exports = async (req, res, next) => {
     return res.status(401).json({ mensaje: 'Token requerido' });
   }
   try {
-    const decoded = jwt.verify(auth.split(' ')[1], process.env.JWT_SECRET);
-    const user = await User.findByPk(decoded.id);
-    if (!user) return res.status(401).json({ mensaje: 'Usuario no encontrado' });
-    req.user = user;
-    next();
+    const token = auth.split(' ')[1];
+    jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+      if (err) {
+        return res.status(401).json({ mensaje: 'Token inválido o expirado' });
+      }
+      req.user = user;
+      next();
+    });
   } catch (err) {
-    if (err.name === 'TokenExpiredError') {
-      return res.status(401).json({ mensaje: 'Token expirado, inicia sesión nuevamente' });
-    }
     return res.status(401).json({ mensaje: 'Token inválido' });
   }
 };
