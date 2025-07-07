@@ -34,15 +34,16 @@ async function buscarUsuarios(req, res) {
 
 // Listar usuarios
 async function obtenerUsuarios(req, res) {
-  const where = {};
-  if (req.query.rol) where.rol = req.query.rol;
-  if (req.query.destacados) where.destacado = req.query.destacados === 'true' || req.query.destacados === '1';
+  try {
+    const where = {};
+    if (req.query.rol) where.rol = req.query.rol;
+    if (req.query.destacados) where.destacado = req.query.destacados === 'true' || req.query.destacados === '1';
 
-  const usuarios = await User.findAll({ where });
-  res.json(usuarios.map(u => {
-    const { contraseña, ...userData } = u.toJSON();
-    return userData;
-  }));
+    const usuarios = await User.findAll({ where });
+    res.json(usuarios);
+  } catch (err) {
+    res.status(500).json({ mensaje: 'Error al obtener usuarios' });
+  }
 }
 
 // Obtener usuario por ID
