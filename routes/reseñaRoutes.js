@@ -1,10 +1,10 @@
 const express = require('express');
-const { body } = require('express-validator');
 const router = express.Router();
 const reseñaController = require('../controllers/reseñaController');
-const authMiddleware = require('../middlewares/authMiddleware');
 
-router.get('/search', reseñaController.buscarReseñas);
+router.get('/', reseñaController.obtenerReseñas);
+
+module.exports = router;
 router.get('/', reseñaController.obtenerReseñas);
 router.get('/:id', reseñaController.obtenerReseñaPorId);
 
