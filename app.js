@@ -5,6 +5,8 @@ const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 require('dotenv').config();
 
+const pedidoRoutes = require('./routes/pedidoRoutes');
+
 const app = express();
 
 app.use(helmet());
@@ -50,8 +52,6 @@ app.use((err, req, res, next) => {
 });
 
 module.exports = app;
-// Middleware global de manejo de errores
-app.use((err, req, res, next) => {
   console.error(err);
   const status = err.status || 500;
   res.status(status).json({
