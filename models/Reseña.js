@@ -8,11 +8,11 @@ const Reseña = sequelize.define('Reseña', {
   clienteId: { type: DataTypes.INTEGER, allowNull: false },
   artesanoId: { type: DataTypes.INTEGER, allowNull: false },
   productoId: { type: DataTypes.INTEGER },
-  fecha: { type: DataTypes.DATE, defaultValue: DataTypes.NOW },
-  destacada: { type: DataTypes.BOOLEAN, defaultValue: false }
+  fecha: { type: DataTypes.DATE, defaultValue: DataTypes.NOW }
 }, {
   tableName: 'reseñas',
   timestamps: false
 });
 
+module.exports = Reseña;
 module.exports = Reseña;

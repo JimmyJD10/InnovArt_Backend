@@ -15,12 +15,9 @@ exports.obtenerReseñas = async (req, res) => {
     const where = {};
     if (req.query.artesanoId) where.artesanoId = req.query.artesanoId;
     if (req.query.productoId) where.productoId = req.query.productoId;
-    if (req.query.destacadas)
-      where.destacada =
-        req.query.destacadas === '1' || req.query.destacadas === 'true';
-
-    const resenas = await Resena.findAll({ where });
-    res.json(resenas);
+    if (req.query.clienteId) where.clienteId = req.query.clienteId;
+    const reseñas = await Reseña.findAll({ where });
+    res.json(reseñas);
   } catch (error) {
     res.status(500).json({ error: 'Error al obtener reseñas' });
   }
