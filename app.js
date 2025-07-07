@@ -6,6 +6,7 @@ const rateLimit = require('express-rate-limit');
 require('dotenv').config();
 
 const pedidoRoutes = require('./routes/pedidoRoutes');
+const reseñaRoutes = require('./routes/reseñaRoutes');
 const authMiddleware = require('./middlewares/authMiddleware');
 
 const app = express();
@@ -32,6 +33,7 @@ app.use((req, res, next) => {
 });
 
 app.use('/api/pedidos', pedidoRoutes);
+app.use('/api/reseñas', reseñaRoutes);
 
 // Ejemplo: proteger pedidos
 app.use('/api/pedidos', authMiddleware, pedidoRoutes);

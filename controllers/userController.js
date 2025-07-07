@@ -26,6 +26,7 @@ async function buscarUsuarios(req, res) {
     ];
   }
   const usuarios = await User.findAll({ where });
+  // Siempre devuelve usuarios sin contraseña
   res.json(usuarios.map(u => {
     const { contraseña, ...userData } = u.toJSON();
     return userData;
@@ -33,14 +34,18 @@ async function buscarUsuarios(req, res) {
 }
 
 // Listar usuarios
-async function obtenerUsuarios(req, res) {
+exports.obtenerUsuarios = async (req, res) => {
   try {
     const where = {};
     if (req.query.rol) where.rol = req.query.rol;
     if (req.query.destacados) where.destacado = req.query.destacados === 'true' || req.query.destacados === '1';
 
     const usuarios = await User.findAll({ where });
-    res.json(usuarios);
+    // Siempre devuelve usuarios sin contraseña
+    res.json(usuarios.map(u => {
+      const { contraseña, ...userData } = u.toJSON();
+      return userData;
+    }));
   } catch (err) {
     res.status(500).json({ mensaje: 'Error al obtener usuarios' });
   }
