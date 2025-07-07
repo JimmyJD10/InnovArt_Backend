@@ -158,7 +158,6 @@ const registrarUsuario = async (req, res) => {
   crearUsuario(req, res);
 };
 
-// Login de usuario
 const loginUsuario = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
