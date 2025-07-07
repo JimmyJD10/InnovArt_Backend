@@ -9,7 +9,7 @@ const app = express();
 
 app.use(helmet());
 app.use(cors({
-  origin: '*', // Cambia esto por el dominio de tu frontend en producción
+  origin: process.env.FRONTEND_URL || 'http://localhost:3000', // Cambia esto en producción
   credentials: true
 }));
 app.use(express.json());
@@ -52,8 +52,13 @@ app.get('/', (req, res) => {
 
 // Middleware global de manejo de errores
 app.use((err, req, res, next) => {
-  console.error('Error:', err);
-  res.status(err.status || 500).json({ mensaje: err.message || 'Error interno del servidor' });
+  console.error(err);
+  const status = err.status || 500;
+  res.status(status).json({
+    ok: false,
+    mensaje: err.message || 'Error interno del servidor',
+    detalles: process.env.NODE_ENV === 'development' ? err.stack : undefined
+  });
 });
 
 module.exports = app;

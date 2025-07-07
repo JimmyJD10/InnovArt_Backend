@@ -16,15 +16,23 @@ exports.crearProducto = async (req, res) => {
 // Obtener todos los productos (incluye artesano y calificación promedio)
 exports.obtenerProductos = async (req, res) => {
   try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const offset = (page - 1) * limit;
     const where = {};
     if (req.query.categoria) where.categoria = req.query.categoria;
     if (req.query.ubicacion) where.ubicacion = req.query.ubicacion;
     if (req.query.destacados) where.destacado = req.query.destacados === '1' || req.query.destacados === 'true';
     if (req.query.usuarioId) where.usuarioId = req.query.usuarioId;
-    const products = await Product.findAll({ where, limit: 50 });
+    const productos = await Product.findAll({
+      where,
+      limit,
+      offset,
+      include: [{ model: User, as: 'artesano', attributes: ['id', 'nombre_completo', 'ciudad'] }]
+    });
 
     // Calcular calificación promedio para cada producto
-    const productsWithRating = await Promise.all(products.map(async (p) => {
+    const productsWithRating = await Promise.all(productos.map(async (p) => {
       const resenas = await Resena.findAll({ where: { productoId: p.id } });
       let calificacion_promedio = 0;
       if (resenas.length > 0) {
@@ -37,7 +45,11 @@ exports.obtenerProductos = async (req, res) => {
       };
     }));
 
-    res.json(productsWithRating);
+    res.json({
+      ok: true,
+      datos: productsWithRating,
+      mensaje: 'Productos obtenidos'
+    });
   } catch (error) {
     console.error('Error en obtenerProductos:', error);
     res.status(500).json({ mensaje: 'Error al obtener productos' });
@@ -47,51 +59,60 @@ exports.obtenerProductos = async (req, res) => {
 // Obtener producto por ID
 exports.obtenerProductoPorId = async (req, res) => {
   try {
-    const producto = await Product.findByPk(req.params.id);
-    if (!producto) return res.status(404).json({ error: 'Producto no encontrado' });
-    res.json(producto);
+    const producto = await Product.findByPk(req.params.id); mensaje: 'Producto no encontrado' });
+    if (!producto) return res.status(404).json({ error: 'Producto no encontrado' });= 'admin' && req.user.id !== producto.usuarioId) {
+    res.json(producto);atus(403).json({ ok: false, mensaje: 'No autorizado' });
   } catch (error) {
-    res.status(500).json({ error: 'Error al obtener producto' });
-  }
-};
-
+    res.status(500).json({ error: 'Error al obtener producto' }); await Product.update(req.body, { where: { id: req.params.id } });
+  }  res.json(producto);
+};  } catch (error) {
+json({ error: 'Error al actualizar producto' });
 // Actualizar producto
 exports.actualizarProducto = async (req, res) => {
   try {
     await Product.update(req.body, { where: { id: req.params.id } });
-    const producto = await Product.findByPk(req.params.id);
+    const producto = await Product.findByPk(req.params.id);ducto = async (req, res) => {
     res.json(producto);
-  } catch (error) {
-    res.status(500).json({ error: 'Error al actualizar producto' });
-  }
-};
+  } catch (error) { const producto = await Product.findByPk(req.params.id);
+    res.status(500).json({ error: 'Error al actualizar producto' });  if (!producto) return res.status(404).json({ ok: false, mensaje: 'Producto no encontrado' });
+  }    if (req.user.rol !== 'admin' && req.user.id !== producto.usuarioId) {
+};on({ ok: false, mensaje: 'No autorizado' });
 
-// Eliminar producto
+// Eliminar productoit Product.destroy({ where: { id: req.params.id } });
 exports.eliminarProducto = async (req, res) => {
   try {
-    await Product.destroy({ where: { id: req.params.id } });
+    await Product.destroy({ where: { id: req.params.id } });    res.status(500).json({ error: 'Error al eliminar producto' });
     res.json({ mensaje: 'Producto eliminado' });
   } catch (error) {
     res.status(500).json({ error: 'Error al eliminar producto' });
-  }
-};
-
-// Buscar productos con filtros
+  }con filtros
+};eq, res) => {
+ {
+// Buscar productos con filtrosoria, ubicacion } = req.query;
 exports.buscarProductos = async (req, res) => {
   try {
-    const { q, categoria, ubicacion } = req.query;
-    const where = {};
+    const { q, categoria, ubicacion } = req.query;    if (q) {
+    const where = {};u modelo lo tiene, si no, cambia por 'nombre'
 
-    if (q) {
+    if (q) {{
       where.titulo = { [Op.like]: `%${q}%` }; // Usa 'titulo' si tu modelo lo tiene, si no, cambia por 'nombre'
     }
-    if (categoria) {
-      where.categoria = categoria;
-    }
-    if (ubicacion) {
-      where.ubicacion = ubicacion;
-    }
+    if (categoria) { if (ubicacion) {
+      where.categoria = categoria;    where.ubicacion = ubicacion;
+    }    }
 
+
+
+
+
+
+
+
+
+
+
+
+};  }    res.status(500).json({ error: 'Error interno del servidor' });    console.error('Error al buscar productos:', error);  } catch (error) {    res.json(productos);    const productos = await Product.findAll({ where, limit: 10 });    }      where.ubicacion = ubicacion;    if (ubicacion) {
     const productos = await Product.findAll({ where, limit: 10 });
     res.json(productos);
   } catch (error) {
