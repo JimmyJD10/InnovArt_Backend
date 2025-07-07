@@ -6,9 +6,22 @@ const { validationResult } = require('express-validator');
 
 // Obtener usuario autenticado
 async function getMe(req, res) {
-  if (!req.user) return res.status(401).json({ mensaje: 'No autenticado' });
-  const { contraseña, ...userData } = req.user.toJSON();
-  res.json(userData);
+  try {
+    if (!req.user) return res.status(401).json({ mensaje: 'No autenticado' });
+    let userData;
+    if (req.user.toJSON && typeof req.user.toJSON === 'function') {
+      // Objeto Sequelize
+      const { contraseña, ...rest } = req.user.toJSON();
+      userData = rest;
+    } else {
+      // Objeto plano
+      const { contraseña, ...rest } = req.user;
+      userData = rest;
+    }
+    res.json(userData);
+  } catch (error) {
+    res.status(500).json({ mensaje: 'Error al obtener usuario autenticado' });
+  }
 }
 
 // Buscar usuarios avanzado
