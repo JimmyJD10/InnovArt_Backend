@@ -1,10 +1,9 @@
 const express = require('express');
+const { body } = require('express-validator');
 const router = express.Router();
 const reseñaController = require('../controllers/reseñaController');
+const authMiddleware = require('../middlewares/authMiddleware');
 
-router.get('/', reseñaController.obtenerReseñas);
-
-module.exports = router;
 router.get('/', reseñaController.obtenerReseñas);
 router.get('/:id', reseñaController.obtenerReseñaPorId);
 
@@ -18,4 +17,5 @@ router.post('/',
 router.put('/:id', authMiddleware, reseñaController.actualizarReseña);
 router.delete('/:id', authMiddleware, reseñaController.eliminarReseña);
 
+module.exports = router;
 module.exports = router;
