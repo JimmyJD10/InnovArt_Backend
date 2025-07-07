@@ -1,7 +1,7 @@
 const User = require('../models/User');
 const Product = require('../models/Product');
 const Pedido = require('../models/Pedido');
-const Resena = require('../models/Resena'); // O Reseña según tu modelo
+const Reseña = require('../models/Reseña'); // Asegúrate que el archivo y modelo existen y usan la ñ
 // Agrega otros modelos si es necesario
 
 exports.getSummary = async (req, res) => {
@@ -12,7 +12,7 @@ exports.getSummary = async (req, res) => {
     const totalPedidos = await Pedido.count();
     let totalReseñas = 0;
     try {
-      totalReseñas = await Resena.count();
+      totalReseñas = await Reseña.count();
     } catch (err) {
       console.error('Error contando reseñas:', err.message);
     }
