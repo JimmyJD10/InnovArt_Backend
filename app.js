@@ -51,14 +51,20 @@ app.use((err, req, res, next) => {
   });
 });
 
-module.exports = app;
-  console.error(err);
-  const status = err.status || 500;
-  res.status(status).json({
-    ok: false,
-    mensaje: err.message || 'Error interno del servidor',
-    detalles: process.env.NODE_ENV === 'development' ? err.stack : undefined
-  });
-});
+// Asegúrate de que el cierre de llaves sea correcto al final del archivo.
+// El archivo debe terminar así:
 
+// ...rutas y middlewares...
+
+// Manejo global de errores (si tienes)
+const errorHandler = require('./middlewares/errorHandler');
+app.use(errorHandler);
+
+// Exporta o inicia el servidor
 module.exports = app;
+// O si usas directamente aquí:
+// app.listen(process.env.PORT || 3001, () => {
+//   console.log('Servidor iniciado');
+// });
+
+// No debe haber un `});` suelto al final.
