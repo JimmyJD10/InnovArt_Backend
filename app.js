@@ -11,6 +11,7 @@ const productRoutes = require('./routes/productRoutes');
 const pedidoRoutes = require('./routes/pedidoRoutes');
 const reseñaRoutes = require('./routes/reseñaRoutes');
 const mensajeRoutes = require('./routes/mensajeRoutes');
+const adminRoutes = require('./routes/adminRoutes');
 
 const errorHandler = require('./middlewares/errorHandler');
 
@@ -38,6 +39,7 @@ app.use('/api/products', productRoutes);
 app.use('/api/pedidos', pedidoRoutes);
 app.use('/api/reseñas', reseñaRoutes);
 app.use('/api/mensajes', mensajeRoutes);
+app.use('/api/admin', adminRoutes);
 
 // Middleware global de manejo de errores
 app.use(errorHandler);
