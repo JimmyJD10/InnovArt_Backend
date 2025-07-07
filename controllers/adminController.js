@@ -10,7 +10,12 @@ exports.getSummary = async (req, res) => {
     const totalArtesanos = await User.count({ where: { rol: 'artesano' } });
     const totalProductos = await Product.count();
     const totalPedidos = await Pedido.count();
-    const totalReseñas = await Resena.count();
+    let totalReseñas = 0;
+    try {
+      totalReseñas = await Resena.count();
+    } catch (err) {
+      console.error('Error contando reseñas:', err.message);
+    }
     // Puedes agregar más métricas aquí
 
     res.json({
@@ -30,6 +35,7 @@ exports.getSummary = async (req, res) => {
       graficoPedidos: []
     });
   } catch (error) {
-    res.status(500).json({ mensaje: 'Error al obtener el resumen' });
+    console.error('Error en getSummary:', error);
+    res.status(500).json({ mensaje: 'Error al obtener el resumen', error: error.message });
   }
 };
