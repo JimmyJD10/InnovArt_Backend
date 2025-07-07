@@ -1,5 +1,5 @@
 const { Op } = require('sequelize');
-const Resena = require('../models/Resena'); // o Reseña
+const Reseña = require('../models/Reseña');
 
 exports.crearReseña = async (req, res) => {
   try {
