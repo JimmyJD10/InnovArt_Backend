@@ -150,7 +150,7 @@ async function login(req, res) {
 }
 
 // Registro de usuario
-exports.registrarUsuario = async (req, res) => {
+const registrarUsuario = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ mensaje: errors.array()[0].msg });
@@ -159,7 +159,7 @@ exports.registrarUsuario = async (req, res) => {
 };
 
 // Login de usuario
-exports.loginUsuario = async (req, res) => {
+const loginUsuario = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ mensaje: errors.array()[0].msg });
