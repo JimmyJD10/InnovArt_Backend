@@ -23,7 +23,7 @@ exports.crearProducto = async (req, res) => {
   }
 };
 
-// Obtener todos los productos (incluye artesano y calificación promedio)
+// Obtener todos los productos
 exports.obtenerProductos = async (req, res) => {
   try {
     const where = {};
@@ -32,7 +32,6 @@ exports.obtenerProductos = async (req, res) => {
     if (req.query.usuarioId) where.usuarioId = req.query.usuarioId;
     if (req.query.destacados) where.destacado = req.query.destacados === '1' || req.query.destacados === 'true';
 
-    // Paginación
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 100;
     const offset = (page - 1) * limit;
@@ -57,7 +56,7 @@ exports.obtenerProductos = async (req, res) => {
   }
 };
 
-// Obtener producto por ID (incluye artesano)
+// Obtener producto por ID
 exports.obtenerProductoPorId = async (req, res) => {
   try {
     const producto = await Product.findByPk(req.params.id, {
@@ -76,7 +75,7 @@ exports.obtenerProductoPorId = async (req, res) => {
   }
 };
 
-// Buscar productos por texto
+// Buscar productos
 exports.buscarProductos = async (req, res) => {
   try {
     const q = req.query.q;
@@ -88,6 +87,7 @@ exports.buscarProductos = async (req, res) => {
         { categoria: { [Op.like]: `%${q}%` } }
       ];
     }
+
     const productos = await Product.findAll({
       where,
       limit: 20,
@@ -100,19 +100,19 @@ exports.buscarProductos = async (req, res) => {
         }
       ]
     });
+
     res.json(productos);
   } catch (err) {
     res.status(500).json({ mensaje: 'Error al buscar productos' });
   }
 };
 
-// Actualizar producto (solo dueño o admin)
+// Actualizar producto
 exports.actualizarProducto = async (req, res) => {
   try {
     const producto = await Product.findByPk(req.params.id);
     if (!producto) return res.status(404).json({ mensaje: 'Producto no encontrado' });
 
-    // Solo el dueño o admin puede editar
     if (req.user.rol !== 'admin' && producto.usuarioId !== req.user.id) {
       return res.status(403).json({ mensaje: 'No autorizado para editar este producto' });
     }
@@ -124,23 +124,17 @@ exports.actualizarProducto = async (req, res) => {
   }
 };
 
-// Eliminar producto (solo dueño o admin)
+// Eliminar producto
 exports.eliminarProducto = async (req, res) => {
   try {
     const producto = await Product.findByPk(req.params.id);
     if (!producto) return res.status(404).json({ mensaje: 'Producto no encontrado' });
 
-    // Solo el dueño o admin puede eliminar
     if (req.user.rol !== 'admin' && producto.usuarioId !== req.user.id) {
       return res.status(403).json({ mensaje: 'No autorizado para eliminar este producto' });
     }
 
     await producto.destroy();
-    res.json({ mensaje: 'Producto eliminado' });
-  } catch (error) {
-    res.status(500).json({ mensaje: 'Error al eliminar producto' });
-  }
-};
     res.json({ mensaje: 'Producto eliminado' });
   } catch (err) {
     res.status(500).json({ mensaje: 'Error al eliminar producto' });
