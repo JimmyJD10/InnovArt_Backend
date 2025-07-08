@@ -17,14 +17,14 @@ router.get('/:id', productController.obtenerProductoPorId);
 // Crear producto (protegido)
 router.post('/',
   authMiddleware,
-  upload.array('imagenes', 5),
+  upload.array('imagenes'),
   body('titulo').notEmpty().withMessage('Título requerido'),
   body('precio').isFloat({ gt: 0 }).withMessage('Precio debe ser mayor a 0'),
   productController.crearProducto
 );
 
 // Actualizar producto (protegido)
-router.put('/:id', authMiddleware, upload.array('imagenes', 5), productController.actualizarProducto);
+router.put('/:id', authMiddleware, upload.array('imagenes'), productController.actualizarProducto);
 
 // Eliminar producto (protegido)
 router.delete('/:id', authMiddleware, productController.eliminarProducto);
