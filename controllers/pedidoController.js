@@ -1,4 +1,5 @@
 const Pedido = require('../models/Pedido');
+const Review = require('../models/Review');
 
 exports.obtenerPedidos = async (req, res) => {
   try {
