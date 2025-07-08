@@ -46,7 +46,7 @@ app.use('/api/mensajes', mensajeRoutes);
 app.use('/api/admin', adminRoutes);
 
 // Servir la carpeta de imágenes subidas
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use('/uploads', require('express').static(path.join(__dirname, 'uploads')));
 
 // Middleware global de manejo de errores
 app.use(errorHandler);
