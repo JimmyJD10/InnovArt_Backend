@@ -20,7 +20,11 @@ const app = express();
 
 app.use(helmet());
 app.use(cors({
-  origin: '*', // O pon tu dominio/frontend aquí para mayor seguridad
+  origin: [
+    'http://localhost:3000',
+    'http://3.139.97.189:3000'
+    // agrega aquí tu dominio si tienes uno
+  ],
   credentials: true
 }));
 
