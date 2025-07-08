@@ -117,14 +117,9 @@ exports.actualizarProducto = async (req, res) => {
       return res.status(403).json({ mensaje: 'No autorizado para editar este producto' });
     }
 
-    const data = req.body;
-    if (req.files && req.files.length > 0) {
-      data.imagenes = JSON.stringify(req.files.map(f => `/uploads/${f.filename}`));
-      data.imagen = `/uploads/${req.files[0].filename}`;
-    }
-    await producto.update(data);
+    await producto.update(req.body);
     res.json(producto);
-  } catch (err) {
+  } catch (error) {
     res.status(500).json({ mensaje: 'Error al actualizar producto' });
   }
 };
@@ -141,6 +136,11 @@ exports.eliminarProducto = async (req, res) => {
     }
 
     await producto.destroy();
+    res.json({ mensaje: 'Producto eliminado' });
+  } catch (error) {
+    res.status(500).json({ mensaje: 'Error al eliminar producto' });
+  }
+};
     res.json({ mensaje: 'Producto eliminado' });
   } catch (err) {
     res.status(500).json({ mensaje: 'Error al eliminar producto' });

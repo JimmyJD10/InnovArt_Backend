@@ -1,5 +1,6 @@
 const Review = require('../models/Review');
 const User = require('../models/User');
+const Product = require('../models/Product');
 
 exports.obtenerReviews = async (req, res) => {
   try {
@@ -22,12 +23,21 @@ exports.crearReview = async (req, res) => {
     }
     const review = await Review.create({ productoId, artesanoId, clienteId, calificacion, comentario });
 
+    // Recalcular promedio y total de reseñas del producto
+    const reviewsProducto = await Review.findAll({ where: { productoId } });
+    const totalProducto = reviewsProducto.length;
+    const promedioProducto = totalProducto > 0 ? (reviewsProducto.reduce((acc, r) => acc + r.calificacion, 0) / totalProducto) : 0;
+    await Product.update(
+      { calificacion_promedio: promedioProducto, total_reseñas: totalProducto },
+      { where: { id: productoId } }
+    );
+
     // Recalcular promedio y total de reseñas del artesano
-    const reviews = await Review.findAll({ where: { artesanoId } });
-    const total = reviews.length;
-    const promedio = total > 0 ? (reviews.reduce((acc, r) => acc + r.calificacion, 0) / total) : 0;
+    const reviewsArtesano = await Review.findAll({ where: { artesanoId } });
+    const totalArtesano = reviewsArtesano.length;
+    const promedioArtesano = totalArtesano > 0 ? (reviewsArtesano.reduce((acc, r) => acc + r.calificacion, 0) / totalArtesano) : 0;
     await User.update(
-      { calificacion_promedio: promedio, total_reseñas: total },
+      { calificacion_promedio: promedioArtesano, total_reseñas: totalArtesano },
       { where: { id: artesanoId } }
     );
 
