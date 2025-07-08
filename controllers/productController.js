@@ -111,9 +111,12 @@ exports.actualizarProducto = async (req, res) => {
   try {
     const producto = await Product.findByPk(req.params.id);
     if (!producto) return res.status(404).json({ mensaje: 'Producto no encontrado' });
-    if (req.user.rol !== 'admin' && req.user.id !== producto.usuarioId) {
-      return res.status(403).json({ mensaje: 'No autorizado' });
+
+    // Solo el dueño o admin puede editar
+    if (req.user.rol !== 'admin' && producto.usuarioId !== req.user.id) {
+      return res.status(403).json({ mensaje: 'No autorizado para editar este producto' });
     }
+
     const data = req.body;
     if (req.files && req.files.length > 0) {
       data.imagenes = JSON.stringify(req.files.map(f => `/uploads/${f.filename}`));
@@ -131,9 +134,12 @@ exports.eliminarProducto = async (req, res) => {
   try {
     const producto = await Product.findByPk(req.params.id);
     if (!producto) return res.status(404).json({ mensaje: 'Producto no encontrado' });
-    if (req.user.rol !== 'admin' && req.user.id !== producto.usuarioId) {
-      return res.status(403).json({ mensaje: 'No autorizado' });
+
+    // Solo el dueño o admin puede eliminar
+    if (req.user.rol !== 'admin' && producto.usuarioId !== req.user.id) {
+      return res.status(403).json({ mensaje: 'No autorizado para eliminar este producto' });
     }
+
     await producto.destroy();
     res.json({ mensaje: 'Producto eliminado' });
   } catch (err) {

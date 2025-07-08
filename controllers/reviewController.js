@@ -1,4 +1,5 @@
 const Review = require('../models/Review');
+const User = require('../models/User');
 
 exports.obtenerReviews = async (req, res) => {
   try {
@@ -20,6 +21,16 @@ exports.crearReview = async (req, res) => {
       return res.status(400).json({ error: 'Faltan campos obligatorios' });
     }
     const review = await Review.create({ productoId, artesanoId, clienteId, calificacion, comentario });
+
+    // Recalcular promedio y total de reseñas del artesano
+    const reviews = await Review.findAll({ where: { artesanoId } });
+    const total = reviews.length;
+    const promedio = total > 0 ? (reviews.reduce((acc, r) => acc + r.calificacion, 0) / total) : 0;
+    await User.update(
+      { calificacion_promedio: promedio, total_reseñas: total },
+      { where: { id: artesanoId } }
+    );
+
     res.status(201).json(review);
   } catch (error) {
     res.status(500).json({ error: 'Error al crear review' });
