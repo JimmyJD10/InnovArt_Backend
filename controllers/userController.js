@@ -123,6 +123,7 @@ async function actualizarUsuario(req, res) {
   for (const campo of camposPermitidos) {
     if (req.body[campo] !== undefined) data[campo] = req.body[campo];
   }
+  if (req.file) data.foto_perfil = `/uploads/${req.file.filename}`;
 
   await User.update(data, { where: { id: req.params.id } });
   const user = await User.findByPk(req.params.id);

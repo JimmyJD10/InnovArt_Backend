@@ -4,6 +4,7 @@ const cors = require('cors');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const morgan = require('morgan');
+const path = require('path');
 require('dotenv').config();
 
 const userRoutes = require('./routes/userRoutes');
@@ -43,6 +44,9 @@ app.use('/api/pedidos', pedidoRoutes);
 app.use('/api/reseñas', reseñaRoutes);
 app.use('/api/mensajes', mensajeRoutes);
 app.use('/api/admin', adminRoutes);
+
+// Servir la carpeta de imágenes subidas
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Middleware global de manejo de errores
 app.use(errorHandler);

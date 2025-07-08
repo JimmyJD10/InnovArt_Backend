@@ -6,15 +6,14 @@ const Reseña = require('../models/Reseña');
 // Crear producto
 exports.crearProducto = async (req, res) => {
   try {
-    const { titulo, descripcion, precio, imagen, categoria, ubicacion } = req.body;
+    const data = req.body;
+    if (req.files && req.files.length > 0) {
+      data.imagenes = JSON.stringify(req.files.map(f => `/uploads/${f.filename}`));
+      data.imagen = `/uploads/${req.files[0].filename}`;
+    }
     const usuarioId = req.user.id;
     const producto = await Product.create({
-      titulo,
-      descripcion,
-      precio,
-      imagen,
-      categoria,
-      ubicacion,
+      ...data,
       usuarioId,
       fecha_publicacion: new Date()
     });
@@ -115,7 +114,12 @@ exports.actualizarProducto = async (req, res) => {
     if (req.user.rol !== 'admin' && req.user.id !== producto.usuarioId) {
       return res.status(403).json({ mensaje: 'No autorizado' });
     }
-    await producto.update(req.body);
+    const data = req.body;
+    if (req.files && req.files.length > 0) {
+      data.imagenes = JSON.stringify(req.files.map(f => `/uploads/${f.filename}`));
+      data.imagen = `/uploads/${req.files[0].filename}`;
+    }
+    await producto.update(data);
     res.json(producto);
   } catch (err) {
     res.status(500).json({ mensaje: 'Error al actualizar producto' });

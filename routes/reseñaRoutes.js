@@ -4,9 +4,11 @@ const router = express.Router();
 const reseñaController = require('../controllers/reseñaController');
 const authMiddleware = require('../middlewares/authMiddleware');
 
+// Obtener reseñas (filtro por artesanoId, productoId, clienteId)
 router.get('/', reseñaController.obtenerReseñas);
 router.get('/:id', reseñaController.obtenerReseñaPorId);
 
+// Crear reseña (requiere autenticación)
 router.post('/',
   authMiddleware,
   body('comentario').notEmpty().withMessage('Comentario requerido'),
@@ -17,5 +19,4 @@ router.post('/',
 router.put('/:id', authMiddleware, reseñaController.actualizarReseña);
 router.delete('/:id', authMiddleware, reseñaController.eliminarReseña);
 
-module.exports = router;
 module.exports = router;

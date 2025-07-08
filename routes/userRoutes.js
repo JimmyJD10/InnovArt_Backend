@@ -4,6 +4,7 @@ const router = express.Router();
 const userController = require('../controllers/userController');
 const authMiddleware = require('../middlewares/authMiddleware');
 const adminMiddleware = require('../middlewares/adminMiddleware');
+const upload = require('../middlewares/uploadMiddleware');
 
 // Buscar usuarios avanzado
 router.get('/search', userController.buscarUsuarios);
@@ -24,6 +25,7 @@ router.post('/',
     body('correo').isEmail().withMessage('Correo inválido'),
     body('contraseña').isLength({ min: 8 }).withMessage('Contraseña mínima 8 caracteres')
   ],
+  upload.single('foto_perfil'), 
   userController.registrarUsuario
 );
 
@@ -37,7 +39,7 @@ router.post('/login',
 );
 
 // Actualizar usuario (propio o admin)
-router.put('/:id', authMiddleware, userController.actualizarUsuario);
+router.put('/:id', upload.single('foto_perfil'), authMiddleware, userController.actualizarUsuario);
 
 // Eliminar usuario (propio o admin)
 router.delete('/:id', authMiddleware, userController.eliminarUsuario);

@@ -3,9 +3,13 @@ const Reseña = require('../models/Reseña');
 
 exports.crearReseña = async (req, res) => {
   try {
-    const reseña = await Reseña.create(req.body);
+    const { productoId, artesanoId, clienteId, calificacion, comentario } = req.body;
+    if (!productoId || !artesanoId || !clienteId || !calificacion) {
+      return res.status(400).json({ error: 'Faltan campos obligatorios' });
+    }
+    const reseña = await Reseña.create({ productoId, artesanoId, clienteId, calificacion, comentario });
     res.status(201).json(reseña);
-  } catch (err) {
+  } catch (error) {
     res.status(500).json({ error: 'Error al crear reseña' });
   }
 };
