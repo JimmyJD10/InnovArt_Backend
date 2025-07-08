@@ -24,7 +24,11 @@ exports.obtenerMensajePorId = async (req, res) => {
 
 exports.crearMensaje = async (req, res) => {
   try {
-    const mensaje = await Mensaje.create(req.body);
+    const { remitenteId, destinatarioId, contenido } = req.body;
+    if (!remitenteId || !destinatarioId) {
+      return res.status(400).json({ error: 'remitenteId y destinatarioId son requeridos' });
+    }
+    const mensaje = await Mensaje.create({ remitenteId, destinatarioId, contenido });
     res.status(201).json(mensaje);
   } catch (error) {
     res.status(500).json({ error: 'Error al crear mensaje' });

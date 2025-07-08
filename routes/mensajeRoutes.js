@@ -5,7 +5,7 @@ const mensajeController = require('../controllers/mensajeController');
 const authMiddleware = require('../middlewares/authMiddleware');
 
 router.get('/search', mensajeController.buscarMensajes);
-router.get('/', mensajeController.obtenerMensajes);
+router.get('/', authMiddleware, mensajeController.obtenerMensajes);
 router.get('/:id', mensajeController.obtenerMensajePorId);
 
 router.post('/',
