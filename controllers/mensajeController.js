@@ -25,13 +25,19 @@ exports.obtenerMensajePorId = async (req, res) => {
 exports.crearMensaje = async (req, res) => {
   try {
     const { remitenteId, destinatarioId, contenido } = req.body;
+    // Log para depuración
+    console.log('Crear mensaje:', { remitenteId, destinatarioId, contenido });
     if (!remitenteId || !destinatarioId) {
       return res.status(400).json({ error: 'remitenteId y destinatarioId son requeridos' });
+    }
+    if (!contenido || typeof contenido !== 'string' || !contenido.trim()) {
+      return res.status(400).json({ error: 'El contenido del mensaje es requerido' });
     }
     const mensaje = await Mensaje.create({ remitenteId, destinatarioId, contenido });
     res.status(201).json(mensaje);
   } catch (error) {
-    res.status(500).json({ error: 'Error al crear mensaje' });
+    console.error('Error al crear mensaje:', error);
+    res.status(500).json({ error: error.message || 'Error al crear mensaje' });
   }
 };
 
