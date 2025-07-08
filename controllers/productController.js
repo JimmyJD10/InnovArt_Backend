@@ -136,7 +136,7 @@ exports.eliminarProducto = async (req, res) => {
 
     await producto.destroy();
     res.json({ mensaje: 'Producto eliminado' });
-  } catch (err) {
+  } catch (error) {
     res.status(500).json({ mensaje: 'Error al eliminar producto' });
   }
 };

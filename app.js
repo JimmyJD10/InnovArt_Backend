@@ -22,8 +22,8 @@ app.use(helmet());
 app.use(cors({
   origin: [
     'http://localhost:3000',
+    'http://3.148.112.19:3000',
     'http://3.139.97.189:3000'
-    // agrega aquí tu dominio si tienes uno
   ],
   credentials: true
 }));
@@ -61,4 +61,5 @@ app.use(errorHandler);
 //   console.log('Servidor iniciado');
 // });
 
+module.exports = app; // Exporta o inicia el servidor
 module.exports = app; // Exporta o inicia el servidor
