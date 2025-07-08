@@ -20,7 +20,8 @@ const app = express();
 
 app.use(helmet());
 app.use(cors({
-  origin: '*'
+  origin: '*', // O pon tu dominio/frontend aquí para mayor seguridad
+  credentials: true
 }));
 
 app.use(express.json());
