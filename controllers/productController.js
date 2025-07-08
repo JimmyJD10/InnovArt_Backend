@@ -1,7 +1,7 @@
 const { Op } = require('sequelize');
 const Product = require('../models/Product');
 const User = require('../models/User');
-const Reseña = require('../models/Reseña');
+const Review = require('../models/Review');
 
 // Crear producto
 exports.crearProducto = async (req, res) => {
