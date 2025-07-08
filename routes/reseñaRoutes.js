@@ -4,7 +4,7 @@ const router = express.Router();
 const reseñaController = require('../controllers/reseñaController');
 const authMiddleware = require('../middlewares/authMiddleware');
 
-// Obtener reseñas (filtro por artesanoId, productoId, clienteId)
+// Obtener reseñas (por producto, artesano, cliente)
 router.get('/', reseñaController.obtenerReseñas);
 router.get('/:id', reseñaController.obtenerReseñaPorId);
 

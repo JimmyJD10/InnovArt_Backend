@@ -17,8 +17,8 @@ exports.crearReseña = async (req, res) => {
 exports.obtenerReseñas = async (req, res) => {
   try {
     const where = {};
-    if (req.query.artesanoId) where.artesanoId = req.query.artesanoId;
     if (req.query.productoId) where.productoId = req.query.productoId;
+    if (req.query.artesanoId) where.artesanoId = req.query.artesanoId;
     if (req.query.clienteId) where.clienteId = req.query.clienteId;
     const reseñas = await Reseña.findAll({ where });
     res.json(reseñas);
