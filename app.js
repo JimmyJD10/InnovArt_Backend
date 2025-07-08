@@ -10,7 +10,7 @@ require('dotenv').config();
 const userRoutes = require('./routes/userRoutes');
 const productRoutes = require('./routes/productRoutes');
 const pedidoRoutes = require('./routes/pedidoRoutes');
-const reseñaRoutes = require('./routes/reseñaRoutes');
+const reviewRoutes = require('./routes/reviewRoutes');
 const mensajeRoutes = require('./routes/mensajeRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 
@@ -41,7 +41,7 @@ app.use('/api/users/register', authLimiter);
 app.use('/api/users', userRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/pedidos', pedidoRoutes);
-app.use('/api/reseñas', reseñaRoutes);
+app.use('/api/reviews', reviewRoutes);
 app.use('/api/mensajes', mensajeRoutes);
 app.use('/api/admin', adminRoutes);
 

@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/db');
 
-const Reseña = sequelize.define('Reseña', {
+const Review = sequelize.define('Review', {
   id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
   productoId: { type: DataTypes.INTEGER, allowNull: false },
   artesanoId: { type: DataTypes.INTEGER, allowNull: false },
@@ -10,9 +10,8 @@ const Reseña = sequelize.define('Reseña', {
   comentario: { type: DataTypes.TEXT, allowNull: true },
   fecha: { type: DataTypes.DATE, defaultValue: DataTypes.NOW }
 }, {
-  tableName: 'reseñas',
+  tableName: 'reviews',
   timestamps: false
 });
 
-module.exports = Reseña;
-module.exports = Reseña;
+module.exports = Review;
