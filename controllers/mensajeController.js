@@ -1,4 +1,5 @@
 const Mensaje = require('../models/Mensaje');
+const { Op } = require('sequelize');
 
 exports.obtenerMensajes = async (req, res) => {
   try {
@@ -8,7 +9,8 @@ exports.obtenerMensajes = async (req, res) => {
     const mensajes = await Mensaje.findAll({ where });
     res.json(mensajes);
   } catch (error) {
-    res.status(500).json({ error: 'Error al obtener mensajes' });
+    console.error('Error al obtener mensajes:', error);
+    res.status(500).json({ error: 'Error al obtener mensajes', detalle: error.message });
   }
 };
 
@@ -65,7 +67,7 @@ exports.buscarMensajes = async (req, res) => {
     const { q } = req.query;
     const where = {};
     if (q) {
-      where.contenido = { $like: `%${q}%` };
+      where.contenido = { [Op.like]: `%${q}%` };
     }
     const mensajes = await Mensaje.findAll({ where, limit: 10 });
     res.json(mensajes);
